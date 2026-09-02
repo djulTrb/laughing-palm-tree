@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import os
+
+code = '''import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
@@ -33,8 +35,8 @@ const AddMember = () => {
     setServerError('');
     try {
       // Extract photo URL from GitHub URL (e.g. https://github.com/djultb -> https://github.com/djultb.png)
-      const githubClean = data.github.trim().replace(/\/$/, '');
-      const photo_url = `${githubClean}.png`;
+      const githubClean = data.github.trim().replace(/\\/$/, '');
+      const photo_url = ${githubClean}.png;
 
       const payload = {
         uuid: uuidv4(),
@@ -84,7 +86,7 @@ const AddMember = () => {
               </label>
               <input 
                 {...register('prenom', { required: t('err_req_firstname', 'First name is required') })}
-                className={`w-full bg-surface-variant border ${errors.prenom ? 'border-red-500' : 'border-outline-variant/30'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors`} 
+                className={w-full bg-surface-variant border  rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors} 
                 placeholder={t('ph_firstname', 'e.g. John')}
               />
               {errors.prenom && <span className="text-red-500 text-xs mt-1">{errors.prenom.message}</span>}
@@ -96,7 +98,7 @@ const AddMember = () => {
               </label>
               <input 
                 {...register('nom', { required: t('err_req_lastname', 'Last name is required') })}
-                className={`w-full bg-surface-variant border ${errors.nom ? 'border-red-500' : 'border-outline-variant/30'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors`} 
+                className={w-full bg-surface-variant border  rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors} 
                 placeholder={t('ph_lastname', 'e.g. Doe')}
               />
               {errors.nom && <span className="text-red-500 text-xs mt-1">{errors.nom.message}</span>}
@@ -109,7 +111,7 @@ const AddMember = () => {
             </label>
             <input 
               {...register('poste', { required: t('err_req_role', 'Role is required') })}
-              className={`w-full bg-surface-variant border ${errors.poste ? 'border-red-500' : 'border-outline-variant/30'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors`} 
+              className={w-full bg-surface-variant border  rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors} 
               placeholder={t('ph_role', 'e.g. Developer')}
             />
             {errors.poste && <span className="text-red-500 text-xs mt-1">{errors.poste.message}</span>}
@@ -129,7 +131,7 @@ const AddMember = () => {
                     addSkill();
                   }
                 }}
-                className={`flex-grow bg-surface-variant border ${errors.skills ? 'border-red-500' : 'border-outline-variant/30'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors`} 
+                className={lex-grow bg-surface-variant border  rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors} 
                 placeholder={t('ph_skills', 'Type a skill and click + (max 2)')}
                 disabled={skillsList.length >= 2}
               />
@@ -172,7 +174,7 @@ const AddMember = () => {
               <input 
                 type="url"
                 {...register('linkedin', { required: t('err_req_linkedin', 'LinkedIn URL is required') })}
-                className={`w-full bg-surface-variant border ${errors.linkedin ? 'border-red-500' : 'border-outline-variant/30'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors`} 
+                className={w-full bg-surface-variant border  rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors} 
                 placeholder="https://linkedin.com/in/..." 
               />
               {errors.linkedin && <span className="text-red-500 text-xs mt-1">{errors.linkedin.message}</span>}
@@ -185,7 +187,7 @@ const AddMember = () => {
               <input 
                 type="url"
                 {...register('github', { required: t('err_req_github', 'GitHub URL is required') })}
-                className={`w-full bg-surface-variant border ${errors.github ? 'border-red-500' : 'border-outline-variant/30'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors`} 
+                className={w-full bg-surface-variant border  rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors} 
                 placeholder="https://github.com/..." 
               />
               {errors.github && <span className="text-red-500 text-xs mt-1">{errors.github.message}</span>}
@@ -199,7 +201,7 @@ const AddMember = () => {
             <input 
               type="number"
               {...register('ordre_affichage', { required: t('err_req_order', 'Display order is required') })}
-              className={`w-full bg-surface-variant border ${errors.ordre_affichage ? 'border-red-500' : 'border-outline-variant/30'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors`} 
+              className={w-full bg-surface-variant border  rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors} 
             />
             {errors.ordre_affichage && <span className="text-red-500 text-xs mt-1">{errors.ordre_affichage.message}</span>}
           </div>
@@ -231,3 +233,7 @@ const AddMember = () => {
 };
 
 export default AddMember;
+'''
+
+with open('src/pages/AddMember.jsx', 'w', encoding='utf-8') as f:
+    f.write(code)
