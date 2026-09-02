@@ -48,7 +48,7 @@ const Admin = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedGallery, setSelectedGallery] = useState(null);
 
-  const [newEvent, setNewEvent] = useState({ title: '', date: '', snippet: '', details: '', location: '', deadline: '' });
+  const [newEvent, setNewEvent] = useState({ title: '', image: '', snippet: '', details: '', location: '', deadline: '' });
   const [newProject, setNewProject] = useState({ title: '', category: '', description: '', link: '' });
   const [newGalleryTitle, setNewGalleryTitle] = useState('');
   const [newResource, setNewResource] = useState({ title: '', description: '', link: '', category: 'pdf', file: null });
@@ -160,13 +160,14 @@ const Admin = () => {
         titre: newEvent.title,
         description: newEvent.snippet,
         details: newEvent.details,
-        date: newEvent.date,
+        photo_url: newEvent.image,
         lieu: newEvent.location,
-        deadline: newEvent.deadline || null
+        deadline: newEvent.deadline || null,
+        uuid: uuidv4()
       };
       const res = await api.post('/events/', payload);
-      setEvents([...events, res.data]);
-      setNewEvent({ title: '', date: '', snippet: '', details: '', location: '', deadline: '' });
+      setEvents([res.data, ...events]);
+      setNewEvent({ title: '', image: '', snippet: '', details: '', location: '', deadline: '' });
     } catch (err) {
       console.error(err);
     }
@@ -347,10 +348,10 @@ const Admin = () => {
                         </div>
                       </div>
                       <div className="flex gap-4">
-                        <button onClick={() => setSelectedMember(member)} className="hover:text-[#9D4EDD] transition-colors flex items-center gap-1 font-body font-semibold text-xs uppercase tracking-wider">
+                        <button onClick={() => navigate('/admin/edit-member/' + member.id)} className="hover:text-[#9D4EDD] transition-colors flex items-center gap-1 font-body font-semibold text-xs uppercase tracking-wider">
                           <span className="material-symbols-outlined text-sm">edit</span>{t("admin_member_modify", "Modify")}
                         </button>
-                        <button onClick={() => handleDeleteMember(member.id)} className="hover:text-error transition-colors flex items-center gap-1 font-body font-semibold text-xs uppercase tracking-wider">
+                        <button onClick={() => { if(window.confirm('Are you sure you want to delete this member?')) handleDeleteMember(member.id); }} className="hover:text-error transition-colors flex items-center gap-1 font-body font-semibold text-xs uppercase tracking-wider">
                           <span className="material-symbols-outlined text-sm">delete</span>{t("admin_member_delete", "Delete")}
                         </button>
                       </div>
@@ -370,9 +371,10 @@ const Admin = () => {
                 <input required value={newEvent.title} onChange={e => setNewEvent({...newEvent, title: e.target.value})} className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all" placeholder={t("admin_event_name_ph", "Enter event name")} type="text" />
               </div>
               <div className="flex flex-col gap-2">
-                <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">{t("admin_event_date", "Date")}</label>
-                <input required value={newEvent.date} onChange={e => setNewEvent({...newEvent, date: e.target.value})} className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all" type="date" />
-              </div>
+                <div className="flex flex-col gap-2">
+                  <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">Image URL</label>
+                  <input required value={newEvent.image} onChange={e => setNewEvent({...newEvent, image: e.target.value})} className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all" placeholder="https://..." type="url" />
+                </div></div>
               <div className="flex flex-col gap-2 md:col-span-2">
                 <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">{t("admin_event_snippet", "Short Snippet")}</label>
                 <textarea required value={newEvent.snippet} onChange={e => setNewEvent({...newEvent, snippet: e.target.value})} className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all resize-none" placeholder={t("admin_event_snippet_ph", "Brief summary for the event card...")} rows="2"></textarea>
@@ -399,14 +401,17 @@ const Admin = () => {
             <h3 className="font-display font-bold text-lg text-black tracking-tight mb-2">{t("admin_events_existing", "Existing Events")}</h3>
             <div className="flex flex-col divide-y divide-outline-variant/30">
               {events.map((event) => (
-                <div key={event.id} className="py-4 font-body text-black flex justify-between items-center hover:bg-surface-container-low px-4 -mx-4 rounded-xl cursor-pointer transition-colors" onClick={() => setSelectedEvent(event)}>
-                  <div>
-                    <span className="font-medium text-sm sm:text-base block">{event.title}</span>
-                    <span className="text-xs text-on-surface-variant">{event.date}</span>
+                <div key={event.id} className="py-4 font-body text-black flex justify-between items-center hover:bg-surface-container-low px-4 -mx-4 rounded-xl transition-colors">
+                  <div className="cursor-pointer flex-1" onClick={() => navigate(`/admin/edit-event/${event.id}`)}>
+                    <span className="font-medium text-sm sm:text-base block">{event.titre || event.title}</span>
+                    <span className="text-xs text-on-surface-variant">{event.deadline ? `Deadline: ${event.deadline.split('T')[0]}` : 'No deadline'}</span>
                   </div>
                   <div className="flex gap-4">
-                    <button className="hover:text-[#9D4EDD] transition-colors flex items-center gap-1 font-body font-semibold text-xs uppercase tracking-wider">
+                    <button onClick={() => navigate(`/admin/edit-event/${event.id}`)} className="hover:text-[#9D4EDD] transition-colors flex items-center gap-1 font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">
                       <span className="material-symbols-outlined text-sm">edit</span>Edit
+                    </button>
+                    <button onClick={() => { if(window.confirm('Are you sure you want to delete this event?')) handleDeleteEvent(event.id); }} className="hover:text-error transition-colors flex items-center gap-1 font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">
+                      <span className="material-symbols-outlined text-sm">delete</span>Delete
                     </button>
                   </div>
                 </div>
