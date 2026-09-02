@@ -14,7 +14,7 @@ class Resource(models.Model):
     titre       = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     categorie   = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default="pdf")
-    fichier_url = models.URLField(max_length=500, blank=True)
+    fichier     = models.FileField(upload_to="resources/", blank=True, null=True)
     evenement   = models.PositiveIntegerField(null=True, blank=True)
     created_at  = models.DateTimeField(auto_now_add=True)
     updated_at  = models.DateTimeField(auto_now=True)
