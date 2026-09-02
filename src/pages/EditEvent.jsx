@@ -92,7 +92,7 @@ const EditEvent = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5" noValidate>
           <div className="flex flex-col gap-1.5">
             <label className="font-body font-semibold text-xs uppercase tracking-wider text-black">Event Name *</label>
             <input 
