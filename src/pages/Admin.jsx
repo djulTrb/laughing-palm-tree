@@ -70,13 +70,15 @@ const Admin = () => {
         
         const phase = recruitmentRes.data?.phase || (Array.isArray(recruitmentRes.data) && recruitmentRes.data[0]?.phase);
         setIsRecruitmentOpen(phase === 'ouvert');
+        setLoading(false);
       } catch (err) {
         console.error('Auth error or API error:', err);
         if (err.response?.status === 401 || err.response?.status === 403) {
+          // Do not set loading to false here. Keep the loader visible while the browser redirects.
           window.location.href = '/admin-auth';
+        } else {
+          setLoading(false);
         }
-      } finally {
-        setLoading(false);
       }
     };
     
@@ -525,10 +527,14 @@ const Admin = () => {
       {/* Modals */}
 
         {selectedMember && (
-          <div className="fixed inset-0 z-50 overflow-y-auto">
-            <div className="min-h-full flex items-center justify-center p-4">
-              <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedMember(null)}></div>
-              <div className="relative bg-surface-container rounded-3xl p-6 md:p-8 max-w-2xl w-full shadow-2xl my-8">
+          <div className="fixed inset-0 z-50">
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+            <div className="absolute inset-0 overflow-y-auto" onClick={() => setSelectedMember(null)}>
+              <div className="min-h-full flex items-center justify-center p-4">
+                <div 
+                  className="relative bg-surface-container rounded-3xl p-6 md:p-8 max-w-2xl w-full shadow-2xl my-8"
+                  onClick={(e) => e.stopPropagation()}
+                >
                 <button onClick={() => setSelectedMember(null)} className="absolute top-6 right-6 w-10 h-10 bg-surface-container hover:bg-surface-variant rounded-full flex items-center justify-center transition-colors">
                   <span className="material-symbols-outlined text-black">close</span>
                 </button>
@@ -604,13 +610,18 @@ const Admin = () => {
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
       {selectedEvent && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="min-h-full flex items-center justify-center p-4">
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedEvent(null)}></div>
-            <div className="relative bg-surface-container rounded-3xl p-6 md:p-8 max-w-2xl w-full shadow-2xl my-8">
+        <div className="fixed inset-0 z-50">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+          <div className="absolute inset-0 overflow-y-auto" onClick={() => setSelectedEvent(null)}>
+            <div className="min-h-full flex items-center justify-center p-4">
+              <div 
+                className="relative bg-surface-container rounded-3xl p-6 md:p-8 max-w-2xl w-full shadow-2xl my-8"
+                onClick={(e) => e.stopPropagation()}
+              >
               <button onClick={() => setSelectedEvent(null)} className="absolute top-6 right-6 w-10 h-10 bg-surface-container hover:bg-surface-variant rounded-full flex items-center justify-center transition-colors">
                 <span className="material-symbols-outlined">close</span>
               </button>
@@ -640,13 +651,18 @@ const Admin = () => {
             </div>
           </div>
         </div>
+        </div>
       )}
 
       {selectedGallery && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="min-h-full flex items-center justify-center p-4">
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedGallery(null)}></div>
-            <div className="relative bg-surface-container rounded-3xl p-6 md:p-8 max-w-4xl w-full shadow-2xl my-8">
+        <div className="fixed inset-0 z-50">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+          <div className="absolute inset-0 overflow-y-auto" onClick={() => setSelectedGallery(null)}>
+            <div className="min-h-full flex items-center justify-center p-4">
+              <div 
+                className="relative bg-surface-container rounded-3xl p-6 md:p-8 max-w-4xl w-full shadow-2xl my-8"
+                onClick={(e) => e.stopPropagation()}
+              >
               <button onClick={() => setSelectedGallery(null)} className="absolute top-6 right-6 w-10 h-10 bg-surface-container hover:bg-surface-variant rounded-full flex items-center justify-center transition-colors">
                 <span className="material-symbols-outlined">close</span>
               </button>
@@ -679,6 +695,7 @@ const Admin = () => {
             </div>
           </div>
         </div>
+        </div>
       )}
 
       {/* Background SVG elements */}
@@ -687,3 +704,4 @@ const Admin = () => {
 };
 
 export default Admin;
+
