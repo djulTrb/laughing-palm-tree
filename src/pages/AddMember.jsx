@@ -119,7 +119,7 @@ const AddMember = () => {
             <label className="font-body font-semibold text-xs uppercase tracking-wider text-black">
               {t('add_member_skills', 'Skills')} <span className="text-red-500">*</span>
             </label>
-            <div className="flex gap-2">
+            <div className="relative flex items-center">
               <input 
                 value={skillInput}
                 onChange={(e) => setSkillInput(e.target.value)}
@@ -129,7 +129,7 @@ const AddMember = () => {
                     addSkill();
                   }
                 }}
-                className={`flex-grow bg-surface-variant border ${errors.skills ? 'border-red-500' : 'border-outline-variant/30'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors`} 
+                className={`w-full bg-surface-variant border ${errors.skills ? 'border-red-500' : 'border-outline-variant/30'} rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors`} 
                 placeholder={t('ph_skills', 'Type a skill and click + (max 2)')}
                 disabled={skillsList.length >= 2}
               />
@@ -137,9 +137,9 @@ const AddMember = () => {
                 type="button" 
                 onClick={addSkill}
                 disabled={skillsList.length >= 2 || !skillInput.trim()}
-                className="bg-[#9D4EDD] text-white px-4 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="absolute right-2 w-8 h-8 bg-[#9D4EDD] text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-sm"
               >
-                <span className="material-symbols-outlined">add</span>
+                <span className="material-symbols-outlined text-[18px]">add</span>
               </button>
             </div>
             
