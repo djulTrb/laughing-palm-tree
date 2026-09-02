@@ -5,7 +5,7 @@ import PageTitleBlob from '../components/ui/PageTitleBlob';
 import api from '../lib/api';
 
 const AdminAuth = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, setError, formState: { errors } } = useForm();
   const navigate = useNavigate();
   const [status, setStatus] = useState('idle');
 
@@ -22,7 +22,10 @@ const AdminAuth = () => {
     } catch (error) {
       console.error(error);
       setStatus('idle');
-      alert(error.response?.data?.detail || "Login failed");
+      setError('root.serverError', {
+        type: 'server',
+        message: error.response?.data?.detail || "Login failed. Please check your credentials."
+      });
     }
   };
 
@@ -40,6 +43,14 @@ const AdminAuth = () => {
           
         <div className="bg-white border border-outline-variant/30 p-6 md:p-12 rounded-2xl shadow-sm mx-auto w-full max-w-md">
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+            
+            {errors.root?.serverError && (
+              <div className="bg-red-50 text-red-600 border border-red-200 rounded-xl p-4 flex items-center gap-3">
+                <span className="material-symbols-outlined text-red-500">error</span>
+                <p className="font-body text-sm font-medium">{errors.root.serverError.message}</p>
+              </div>
+            )}
+
             <div className="flex flex-col gap-2">
               <label className="font-body font-semibold text-xs text-on-surface-variant uppercase tracking-wider">Username<span className="text-red-500 text-base ml-1">*</span></label>
               <input 

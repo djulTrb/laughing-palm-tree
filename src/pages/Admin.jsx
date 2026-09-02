@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '../lib/api';
+import LoadingState from '../components/ui/LoadingState';
 
 const DUMMY_EVENTS = [
   { id: 1, title: 'AI Workshop', date: '2024-03-15', snippet: 'Intro to GenAI', details: 'Full details here', location: 'Lab 1', deadline: '2024-03-10' },
@@ -252,7 +253,7 @@ const Admin = () => {
   if (loading) {
     return (
       <main className="flex-grow flex items-center justify-center w-full h-screen bg-background font-body">
-        <div className="w-16 h-16 border-4 border-[#9D4EDD] border-t-transparent rounded-full animate-spin"></div>
+        <LoadingState variant="Dots" showPercentage={false} />
       </main>
     );
   }
