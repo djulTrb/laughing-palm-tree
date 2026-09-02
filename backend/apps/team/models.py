@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Member(models.Model):
+    uuid            = models.CharField(max_length=100, blank=True, null=True, unique=True)
     prenom          = models.CharField(max_length=100)
     nom             = models.CharField(max_length=100)
     poste           = models.CharField(max_length=150)

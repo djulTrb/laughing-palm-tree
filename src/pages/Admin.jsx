@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 import LoadingState from '../components/ui/LoadingState';
 
@@ -30,6 +31,7 @@ const DUMMY_GALLERIES = [
 
 const Admin = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
   const [members, setMembers] = useState([]);
@@ -113,7 +115,7 @@ const Admin = () => {
       setSelectedMember(null);
     } catch (err) {
       console.error("Failed to save member", err);
-      alert("Failed to save member");
+      
     }
   };
 
@@ -153,7 +155,15 @@ const Admin = () => {
   const handleAddEvent = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.post('/events/', newEvent);
+      const payload = {
+        titre: newEvent.title,
+        description: newEvent.snippet,
+        details: newEvent.details,
+        date: newEvent.date,
+        lieu: newEvent.location,
+        deadline: newEvent.deadline || null
+      };
+      const res = await api.post('/events/', payload);
       setEvents([...events, res.data]);
       setNewEvent({ title: '', date: '', snippet: '', details: '', location: '', deadline: '' });
     } catch (err) {
@@ -305,7 +315,7 @@ const Admin = () => {
               <div className="flex justify-between items-center mb-2">
                 <h2 className="font-display font-bold text-xl text-black tracking-tight">{t("admin_members_title", "Manage members")}</h2>
                 <button 
-                  onClick={() => setSelectedMember({ prenom: '', nom: '', poste: '', description: '', skills: '', linkedin: '', github: '', photo_url: '', ordre_affichage: 0 })}
+                  onClick={() => navigate('/admin/add-member')}
                   className="px-6 py-2 bg-[#9D4EDD] text-white font-body font-semibold text-xs uppercase tracking-wider rounded-full hover:opacity-80 transition-opacity flex items-center gap-1.5 shadow-sm">
                   <span className="material-symbols-outlined text-sm">add</span>{t("admin_member_add", "Add Member")}
                 </button>
