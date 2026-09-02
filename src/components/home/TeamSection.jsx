@@ -24,7 +24,7 @@ const MemberRow = ({ member, elRef, avatarRef }) => {
             <span className="w-fit font-accent text-[10px] font-bold bg-white dark:bg-surface-variant/20 px-3 py-1 rounded-full text-on-surface-variant uppercase tracking-wider border border-outline-variant/30">{member.role}</span>
           </div>
           <div ref={avatarRef} className="w-14 h-14 rounded-2xl overflow-hidden bg-surface-variant/50 shrink-0 border border-outline-variant/30 flex items-center justify-center text-on-surface-variant font-display font-bold">
-            {member.image ? <img alt={member.name} className="w-full h-full object-cover" loading="lazy" src={member.image} /> : member.name.charAt(0)}
+            {member.image ? <img alt={member.name} className="w-full h-full object-cover" loading="lazy" src={member.image} /> : member.name?.charAt(0)}
           </div>
         </div>
         <div className="flex flex-wrap gap-2 items-center mb-5">
@@ -37,12 +37,16 @@ const MemberRow = ({ member, elRef, avatarRef }) => {
           ))}
         </div>
         <div className="flex flex-row gap-4 items-center">
-          <a href="#" className="group/link font-body font-bold text-xs uppercase tracking-wider text-on-surface hover:text-[#9D4EDD] flex items-center gap-1 transition-colors">
-            <span className="material-symbols-outlined text-sm group-hover/link:translate-x-[2px] group-hover/link:-translate-y-[2px] transition-transform duration-150 ease-out">arrow_outward</span> LinkedIn
-          </a>
-          <a href="#" className="group/link font-body font-bold text-xs uppercase tracking-wider text-on-surface hover:text-[#9D4EDD] flex items-center gap-1 transition-colors">
-            <span className="material-symbols-outlined text-sm group-hover/link:translate-x-[2px] group-hover/link:-translate-y-[2px] transition-transform duration-150 ease-out">arrow_outward</span> GitHub
-          </a>
+          {member.linkedin && member.linkedin !== '#' && (
+            <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="group/link font-body font-bold text-xs uppercase tracking-wider text-on-surface hover:text-[#9D4EDD] flex items-center gap-1 transition-colors">
+              <span className="material-symbols-outlined text-sm group-hover/link:translate-x-[2px] group-hover/link:-translate-y-[2px] transition-transform duration-150 ease-out">arrow_outward</span> LinkedIn
+            </a>
+          )}
+          {member.github && member.github !== '#' && (
+            <a href={member.github} target="_blank" rel="noopener noreferrer" className="group/link font-body font-bold text-xs uppercase tracking-wider text-on-surface hover:text-[#9D4EDD] flex items-center gap-1 transition-colors">
+              <span className="material-symbols-outlined text-sm group-hover/link:translate-x-[2px] group-hover/link:-translate-y-[2px] transition-transform duration-150 ease-out">arrow_outward</span> GitHub
+            </a>
+          )}
         </div>
       </div>
 
@@ -50,7 +54,7 @@ const MemberRow = ({ member, elRef, avatarRef }) => {
       <div className="hidden sm:flex flex-row items-center justify-between w-full">
         <div className="flex flex-row items-center gap-6 flex-1">
           <div ref={avatarRef} className="w-20 h-20 rounded-2xl overflow-hidden bg-surface-variant/50 shrink-0 border border-outline-variant/30 flex items-center justify-center text-on-surface-variant font-display text-xl font-bold">
-            {member.image ? <img alt={member.name} className="w-full h-full object-cover" loading="lazy" src={member.image} /> : member.name.charAt(0)}
+            {member.image ? <img alt={member.name} className="w-full h-full object-cover" loading="lazy" src={member.image} /> : member.name?.charAt(0)}
           </div>
           <div className="flex flex-col justify-center">
             <div className="flex flex-row items-center gap-3 mb-3">
@@ -70,12 +74,16 @@ const MemberRow = ({ member, elRef, avatarRef }) => {
         </div>
         
         <div className="flex flex-col gap-3 shrink-0 items-end pr-4">
-          <a href="#" className="group/link font-body font-bold text-xs uppercase tracking-wider text-on-surface hover:text-[#9D4EDD] flex items-center gap-1 transition-colors">
-            <span className="material-symbols-outlined text-sm group-hover/link:translate-x-[2px] group-hover/link:-translate-y-[2px] transition-transform duration-150 ease-out">arrow_outward</span> LinkedIn
-          </a>
-          <a href="#" className="group/link font-body font-bold text-xs uppercase tracking-wider text-on-surface hover:text-[#9D4EDD] flex items-center gap-1 transition-colors">
-            <span className="material-symbols-outlined text-sm group-hover/link:translate-x-[2px] group-hover/link:-translate-y-[2px] transition-transform duration-150 ease-out">arrow_outward</span> GitHub
-          </a>
+          {member.linkedin && member.linkedin !== '#' && (
+            <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="group/link font-body font-bold text-xs uppercase tracking-wider text-on-surface hover:text-[#9D4EDD] flex items-center gap-1 transition-colors">
+              <span className="material-symbols-outlined text-sm group-hover/link:translate-x-[2px] group-hover/link:-translate-y-[2px] transition-transform duration-150 ease-out">arrow_outward</span> LinkedIn
+            </a>
+          )}
+          {member.github && member.github !== '#' && (
+            <a href={member.github} target="_blank" rel="noopener noreferrer" className="group/link font-body font-bold text-xs uppercase tracking-wider text-on-surface hover:text-[#9D4EDD] flex items-center gap-1 transition-colors">
+              <span className="material-symbols-outlined text-sm group-hover/link:translate-x-[2px] group-hover/link:-translate-y-[2px] transition-transform duration-150 ease-out">arrow_outward</span> GitHub
+            </a>
+          )}
         </div>
       </div>
     </div>
@@ -108,7 +116,12 @@ const TeamSection = () => {
       try {
         const response = await api.get('/team/');
         const parsedMembers = response.data.map(member => ({
-          ...member,
+          id: member.id || member.uuid,
+          name: `${member.prenom || ''} ${member.nom || ''}`.trim(),
+          role: member.poste || '',
+          image: member.photo_url || '',
+          linkedin: member.linkedin || '#',
+          github: member.github || '#',
           skills: member.skills ? member.skills.split(',').map(s => s.trim()) : []
         }));
         setTeamMembers(parsedMembers);
