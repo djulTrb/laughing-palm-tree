@@ -1,10 +1,13 @@
 export const routeComponents = {
+  Applications: () => import('../pages/Applications'),
+  Adherents: () => import('../pages/Adherents'),
+  EditMember: () => import('../pages/EditMember'),
   Home: () => import('../pages/Home'),
   Events: () => import('../pages/Events'),
   Gallery: () => import('../pages/Gallery'),
   Resources: () => import('../pages/Resources'),
   Contact: () => import('../pages/Contact'),
-  Recruitment: () => import('../pages/Recruitment'),
+  Registration: () => import('../pages/Registration'),
   Admin: () => import('../pages/Admin'),
   AdminAuth: () => import('../pages/AdminAuth'),
   AddMember: () => import('../pages/AddMember'),
@@ -20,5 +23,5 @@ export const preloadRoute = (path) => {
   else if (path.startsWith('/gallery')) routeComponents.Gallery();
   else if (path.startsWith('/resources')) routeComponents.Resources();
   else if (path.startsWith('/contact')) routeComponents.Contact();
-  else if (path.startsWith('/recruitment')) routeComponents.Recruitment();
+  else if (path.startsWith('/recruitment')) routeComponents.Registration();
 };

@@ -59,9 +59,13 @@ const EventDetails = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     // Simulate form submission
-    console.log("Form submitted for event:", event.title, formData);
-    setSubmitted(true);
+    setTimeout(() => {
+      console.log("Form submitted for event:", event?.title, formData);
+      setSubmitted(true);
+      setIsSubmitting(false);
+    }, 1000);
   };
 
   return (
@@ -168,9 +172,10 @@ const EventDetails = () => {
 
                   <button 
                     type="submit"
-                    className="mt-4 w-full bg-[#9D4EDD] text-white rounded-xl py-4 font-bold uppercase tracking-widest text-xs hover:opacity-90 transition-opacity shadow-sm flex items-center justify-center gap-2"
+                    disabled={isSubmitting}
+                    className="mt-4 w-full bg-[#9D4EDD] text-white rounded-xl py-4 font-bold uppercase tracking-widest text-xs hover:opacity-90 transition-opacity shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Submit Registration
+                    {isSubmitting ? 'Submitting...' : 'Submit Registration'}
                     <span className="material-symbols-outlined text-sm rtl:rotate-180">arrow_forward</span>
                   </button>
                 </form>

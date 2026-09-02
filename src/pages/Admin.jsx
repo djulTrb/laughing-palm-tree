@@ -4,31 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 import { v4 as uuidv4 } from 'uuid';
 import LoadingState from '../components/ui/LoadingState';
-
-const DUMMY_EVENTS = [
-  { id: 1, title: 'AI Workshop', date: '2024-03-15', snippet: 'Intro to GenAI', details: 'Full details here', location: 'Lab 1', deadline: '2024-03-10' },
-  { id: 2, title: 'Hackathon 2024', date: '2024-04-20', snippet: 'Build the future', details: 'Join us for 48 hours...', location: 'Main Hall', deadline: '2024-04-15' }
-];
-
-const DUMMY_GALLERIES = [
-  { 
-    id: 1, 
-    title: 'Hackathon 2023', 
-    images: [
-      { id: 101, url: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=200&h=200&fit=crop' },
-      { id: 102, url: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=200&h=200&fit=crop' },
-      { id: 103, url: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=200&h=200&fit=crop' },
-    ] 
-  },
-  { 
-    id: 2, 
-    title: 'Workshop AI', 
-    images: [
-      { id: 201, url: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=200&h=200&fit=crop' },
-      { id: 202, url: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=200&h=200&fit=crop' },
-    ] 
-  }
-];
+import AddEventForm from '../components/admin/AddEventForm';
+import AddProjectForm from '../components/admin/AddProjectForm';
+import AddGalleryForm from '../components/admin/AddGalleryForm';
+import AddResourceForm from '../components/admin/AddResourceForm';
 
 const Admin = () => {
   const { t } = useTranslation();
@@ -36,6 +15,7 @@ const Admin = () => {
   const [loading, setLoading] = useState(true);
 
   const [members, setMembers] = useState([]);
+  const [memberToDelete, setMemberToDelete] = useState(null);
   const [selectedMember, setSelectedMember] = useState(null);
 
 
@@ -48,10 +28,10 @@ const Admin = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedGallery, setSelectedGallery] = useState(null);
 
-  const [newEvent, setNewEvent] = useState({ title: '', image: '', snippet: '', details: '', location: '', deadline: '' });
-  const [newProject, setNewProject] = useState({ title: '', category: '', description: '', link: '' });
-  const [newGalleryTitle, setNewGalleryTitle] = useState('');
-  const [newResource, setNewResource] = useState({ title: '', description: '', link: '', category: 'pdf', file: null });
+  
+  
+  
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -120,56 +100,38 @@ const Admin = () => {
     }
   };
 
-  const handleDeleteMember = async (id) => {
-    if (!window.confirm("Are you sure?")) return;
+
+  const toggleRecruitment = async () => {
     try {
-      await api.delete(`/team/${id}/`);
-      setMembers(members.filter(m => m.id !== id));
+      await api.put('/recruitment/settings/', { recrutements_ouverts: !isRecruitmentOpen });
+      setIsRecruitmentOpen(!isRecruitmentOpen);
+    } catch (err) {
+      console.error("Failed to toggle recruitment phase:", err);
+      alert("Failed to update recruitment settings on the server.");
+    }
+  };
+
+  const handleDeleteMember = async () => {
+    if (!memberToDelete) return;
+    try {
+      await api.delete(`/team/${memberToDelete}/`);
+      setMembers(members.filter(m => (m.uuid || m.id) !== memberToDelete));
+      setMemberToDelete(null);
     } catch (err) {
       console.error("Failed to delete member", err);
     }
   };
 
+
   const handleLogout = async () => {
     try {
       await api.post('/accounts/logout/');
+      localStorage.removeItem('mirai_auth_token');
+      window.location.href = '/';
     } catch (err) {
-      console.error(err);
-    } finally {
-      window.location.href = '/admin-auth';
-    }
-  };
-
-  const toggleRecruitment = async () => {
-    try {
-      const newPhase = isRecruitmentOpen ? 'ferme' : 'ouvert';
-      await api.post('/recruitment/settings/', { phase: newPhase }).catch(async () => {
-         await api.patch('/recruitment/settings/', { phase: newPhase });
-      });
-      setIsRecruitmentOpen(!isRecruitmentOpen);
-    } catch (err) {
-      console.error(err);
-      setIsRecruitmentOpen(!isRecruitmentOpen); 
-    }
-  };
-
-  const handleAddEvent = async (e) => {
-    e.preventDefault();
-    try {
-      const payload = {
-        titre: newEvent.title,
-        description: newEvent.snippet,
-        details: newEvent.details,
-        photo_url: newEvent.image,
-        lieu: newEvent.location,
-        deadline: newEvent.deadline || null,
-        uuid: uuidv4()
-      };
-      const res = await api.post('/events/', payload);
-      setEvents([res.data, ...events]);
-      setNewEvent({ title: '', image: '', snippet: '', details: '', location: '', deadline: '' });
-    } catch (err) {
-      console.error(err);
+      console.error("Logout failed:", err);
+      localStorage.removeItem('mirai_auth_token');
+      window.location.href = '/';
     }
   };
 
@@ -274,6 +236,37 @@ const Admin = () => {
     return (
       <main className="flex-grow flex items-center justify-center w-full h-screen bg-background font-body">
         <LoadingState variant="Dots" showPercentage={false} />
+      
+      {/* Delete Confirmation Modal */}
+      {memberToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl border border-outline-variant/30 transform transition-all">
+            <div className="flex flex-col items-center text-center gap-4">
+              <div className="w-16 h-16 bg-error/10 rounded-full flex items-center justify-center text-error mb-2">
+                <span className="material-symbols-outlined text-3xl">warning</span>
+              </div>
+              <h3 className="font-display font-bold text-xl text-black">Delete Member?</h3>
+              <p className="font-body text-sm text-on-surface-variant">
+                This action cannot be undone. Are you sure you want to remove this member from the club?
+              </p>
+              <div className="flex gap-3 w-full mt-4">
+                <button 
+                  onClick={() => setMemberToDelete(null)}
+                  className="flex-1 py-3 px-4 font-body font-semibold text-xs uppercase tracking-wider rounded-xl border border-outline-variant/30 hover:bg-surface-container transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleDeleteMember}
+                  className="flex-1 py-3 px-4 font-body font-semibold text-xs uppercase tracking-wider rounded-xl bg-error text-white shadow-sm hover:bg-error/80 transition-colors"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       </main>
     );
   }
@@ -297,24 +290,34 @@ const Admin = () => {
         
         <div className="w-full flex flex-col gap-8 max-w-[1400px]">
           
-          {/* Recruitment Toggle */}
+          {/* Recruitment Toggle & Applications */}
           <div className="flex flex-col gap-4 bg-surface-container p-6 md:p-8 rounded-2xl border border-outline-variant/30 shadow-sm">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div>
+              <div className="flex-1">
                 <h2 className="font-display font-bold text-xl text-black tracking-tight mb-1">{t('admin_recruit_status', 'Recruitment Status')}</h2>
-                <p className="font-body text-xs sm:text-sm text-on-surface-variant">{t('admin_recruit_desc', 'Toggle whether the student recruitment application form is open or closed for public applicants.')}</p>
+                <p className="font-body text-xs sm:text-sm text-on-surface-variant max-w-md">{t('admin_recruit_desc', 'Toggle whether the student recruitment application form is open or closed for public applicants.')}</p>
               </div>
-              <button 
-                onClick={toggleRecruitment}
-                className={`px-8 py-3 text-white font-body font-semibold text-xs uppercase tracking-wider rounded-full transition-colors flex items-center gap-2 shadow-sm ${
-                  isRecruitmentOpen ? 'bg-error hover:bg-error/80' : 'bg-green-600 hover:bg-green-700'
-                }`}
-              >
-                <span className="material-symbols-outlined text-sm">
-                  {isRecruitmentOpen ? 'block' : 'check_circle'}
-                </span>
-                {isRecruitmentOpen ? t('admin_recruit_close', 'Close Recruitment') : t('admin_recruit_open', 'Open Recruitment')}
-              </button>
+              <div className="flex flex-wrap items-center gap-3">
+                <button onClick={() => navigate('/admin/applications')} className="px-5 py-3 bg-white text-black font-body font-semibold text-xs uppercase tracking-wider rounded-full hover:bg-surface-variant transition-colors flex items-center gap-2 shadow-sm border border-outline-variant/30">
+                  <span className="material-symbols-outlined text-sm">inbox</span>
+                  Applications
+                </button>
+                <button onClick={() => navigate('/admin/adherents')} className="px-5 py-3 bg-white text-black font-body font-semibold text-xs uppercase tracking-wider rounded-full hover:bg-surface-variant transition-colors flex items-center gap-2 shadow-sm border border-outline-variant/30">
+                  <span className="material-symbols-outlined text-sm">groups</span>
+                  Adherents List
+                </button>
+                <button 
+                  onClick={toggleRecruitment}
+                  className={`px-6 py-3 text-white font-body font-semibold text-xs uppercase tracking-wider rounded-full transition-colors flex items-center gap-2 shadow-sm ${
+                    isRecruitmentOpen ? 'bg-error hover:bg-error/80' : 'bg-green-600 hover:bg-green-700'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-sm">
+                    {isRecruitmentOpen ? 'block' : 'check_circle'}
+                  </span>
+                  {isRecruitmentOpen ? t('admin_recruit_close', 'Close Recruitment') : t('admin_recruit_open', 'Open Recruitment')}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -348,10 +351,10 @@ const Admin = () => {
                         </div>
                       </div>
                       <div className="flex gap-4">
-                        <button onClick={() => navigate('/admin/edit-member/' + member.id)} className="hover:text-[#9D4EDD] transition-colors flex items-center gap-1 font-body font-semibold text-xs uppercase tracking-wider">
+                        <button onClick={() => navigate('/admin/edit-member/' + (member.uuid || member.id))} className="hover:text-[#9D4EDD] transition-colors flex items-center gap-1 font-body font-semibold text-xs uppercase tracking-wider">
                           <span className="material-symbols-outlined text-sm">edit</span>{t("admin_member_modify", "Modify")}
                         </button>
-                        <button onClick={() => { if(window.confirm('Are you sure you want to delete this member?')) handleDeleteMember(member.id); }} className="hover:text-error transition-colors flex items-center gap-1 font-body font-semibold text-xs uppercase tracking-wider">
+                        <button onClick={() => setMemberToDelete(member.uuid || member.id)} className="hover:text-error transition-colors flex items-center gap-1 font-body font-semibold text-xs uppercase tracking-wider">
                           <span className="material-symbols-outlined text-sm">delete</span>{t("admin_member_delete", "Delete")}
                         </button>
                       </div>
@@ -365,38 +368,7 @@ const Admin = () => {
             <div className="flex justify-between items-center mb-2">
               <h2 className="font-display font-bold text-xl text-black tracking-tight">{t("admin_events_title", "Manage Events")}</h2>
             </div>
-            <form onSubmit={handleAddEvent} className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 border-b border-outline-variant/30 pb-8">
-              <div className="flex flex-col gap-2">
-                <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">{t("admin_event_name", "Event Name")}</label>
-                <input required value={newEvent.title} onChange={e => setNewEvent({...newEvent, title: e.target.value})} className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all" placeholder={t("admin_event_name_ph", "Enter event name")} type="text" />
-              </div>
-              <div className="flex flex-col gap-2">
-                <div className="flex flex-col gap-2">
-                  <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">Image URL</label>
-                  <input required value={newEvent.image} onChange={e => setNewEvent({...newEvent, image: e.target.value})} className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all" placeholder="https://..." type="url" />
-                </div></div>
-              <div className="flex flex-col gap-2 md:col-span-2">
-                <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">{t("admin_event_snippet", "Short Snippet")}</label>
-                <textarea required value={newEvent.snippet} onChange={e => setNewEvent({...newEvent, snippet: e.target.value})} className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all resize-none" placeholder={t("admin_event_snippet_ph", "Brief summary for the event card...")} rows="2"></textarea>
-              </div>
-              <div className="flex flex-col gap-2 md:col-span-2">
-                <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">{t("admin_event_details", "Full Details")}</label>
-                <textarea required value={newEvent.details} onChange={e => setNewEvent({...newEvent, details: e.target.value})} className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all resize-none" placeholder={t("admin_event_details_ph", "Enter full event information for the details window...")} rows="4"></textarea>
-              </div>
-              <div className="flex flex-col gap-2">
-                <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">{t("admin_event_location", "Location")}</label>
-                <input required value={newEvent.location} onChange={e => setNewEvent({...newEvent, location: e.target.value})} className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all" placeholder={t("admin_event_location_ph", "Enter location")} type="text" />
-              </div>
-              <div className="flex flex-col gap-2">
-                <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">Deadline {t("admin_event_date", "Date")}</label>
-                <input required value={newEvent.deadline} onChange={e => setNewEvent({...newEvent, deadline: e.target.value})} className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all" type="date" />
-              </div>
-              <div className="md:col-span-2 flex justify-end mt-2">
-                <button className="px-8 py-3 bg-[#9D4EDD] text-white font-body font-semibold text-xs uppercase tracking-wider rounded-xl hover:opacity-80 transition-opacity flex items-center gap-2 shadow-sm" type="submit">
-                  <span className="material-symbols-outlined text-sm">calendar_add_on</span>{t("admin_event_add", "Add Event")}
-                </button>
-              </div>
-            </form>
+            <AddEventForm onEventAdded={(event) => setEvents([event, ...events])} />
 
             <h3 className="font-display font-bold text-lg text-black tracking-tight mb-2">{t("admin_events_existing", "Existing Events")}</h3>
             <div className="flex flex-col divide-y divide-outline-variant/30">
@@ -426,29 +398,7 @@ const Admin = () => {
               <h2 className="font-display font-bold text-xl text-black tracking-tight">{t("admin_projects_title", "Manage Projects")}</h2>
             </div>
             
-            <form onSubmit={handleAddProject} className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 border-b border-outline-variant/30 pb-8">
-              <div className="flex flex-col gap-2">
-                <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">Project Name</label>
-                <input required value={newProject.title} onChange={e => setNewProject({...newProject, title: e.target.value})} className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all" placeholder="Enter project name" type="text" />
-              </div>
-              <div className="flex flex-col gap-2">
-                <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">Category</label>
-                <input required value={newProject.category} onChange={e => setNewProject({...newProject, category: e.target.value})} className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all" placeholder="e.g. NLP, VISION" type="text" />
-              </div>
-              <div className="flex flex-col gap-2 md:col-span-2">
-                <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">Description</label>
-                <textarea required value={newProject.description} onChange={e => setNewProject({...newProject, description: e.target.value})} className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all resize-none" placeholder="Brief project summary..." rows="2"></textarea>
-              </div>
-              <div className="flex flex-col gap-2 md:col-span-2">
-                <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">Link (Optional)</label>
-                <input value={newProject.link} onChange={e => setNewProject({...newProject, link: e.target.value})} className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all" placeholder="https://..." type="url" />
-              </div>
-              <div className="md:col-span-2 flex justify-end mt-2">
-                <button className="px-8 py-3 bg-[#9D4EDD] text-white font-body font-semibold text-xs uppercase tracking-wider rounded-xl hover:opacity-80 transition-opacity flex items-center gap-2 shadow-sm" type="submit">
-                  <span className="material-symbols-outlined text-sm">add</span>Add Project
-                </button>
-              </div>
-            </form>
+            <AddProjectForm onProjectAdded={(project) => setProjects([project, ...projects])} />
 
             <h3 className="font-display font-bold text-lg text-black tracking-tight mb-2">Existing Projects</h3>
             <div className="flex flex-col divide-y divide-outline-variant/30">
@@ -474,24 +424,7 @@ const Admin = () => {
             <div className="flex justify-between items-center mb-2">
               <h2 className="font-display font-bold text-xl text-black tracking-tight">{t("admin_gallery_title", "Manage Gallery")}</h2>
             </div>
-            <form onSubmit={handleAddGallery} className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 border-b border-outline-variant/30 pb-8">
-              <div className="flex flex-col gap-2 md:col-span-2">
-                <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">{t("admin_gallery_group", "Group Title")}</label>
-                <input required value={newGalleryTitle} onChange={e => setNewGalleryTitle(e.target.value)} className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all" placeholder={t("admin_gallery_group_ph", "Enter group title (e.g. Workshop 2024)")} type="text" />
-              </div>
-              <div className="flex flex-col gap-2 md:col-span-2">
-                <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">{t("admin_gallery_upload", "Upload Images")}</label>
-                <div className="w-full bg-surface-container-low border border-dashed border-outline-variant/30 rounded-2xl px-6 py-8 font-body text-sm flex flex-col items-center justify-center cursor-pointer hover:bg-surface-container-high transition-colors gap-2">
-                  <span className="material-symbols-outlined text-3xl text-[#9D4EDD]">add_photo_alternate</span>
-                  <span className="text-on-surface-variant/60 text-xs">{t("admin_gallery_drag", "Click or drag to upload multiple images")}</span>
-                </div>
-              </div>
-              <div className="md:col-span-2 flex justify-end mt-2">
-                <button className="px-8 py-3 bg-[#9D4EDD] text-white font-body font-semibold text-xs uppercase tracking-wider rounded-xl hover:opacity-80 transition-opacity flex items-center gap-2 shadow-sm" type="submit">
-                  <span className="material-symbols-outlined text-sm">gallery_thumbnail</span>{t("admin_gallery_add", "Add to Gallery")}
-                </button>
-              </div>
-            </form>
+            <AddGalleryForm onGalleryAdded={(gallery) => setGalleries([gallery, ...galleries])} />
 
             <h3 className="font-display font-bold text-lg text-black tracking-tight mb-2">{t("admin_galleries_existing", "Existing Galleries")}</h3>
             <div className="flex flex-col divide-y divide-outline-variant/30">
@@ -516,44 +449,7 @@ const Admin = () => {
             <div className="flex justify-between items-center mb-2">
               <h2 className="font-display font-bold text-xl text-black tracking-tight">{t("admin_resources_title", "Manage Resources")}</h2>
             </div>
-            <form onSubmit={handleAddResource} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex flex-col gap-2 md:col-span-2">
-                <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">{t("admin_resource_title", "Resource Title")}</label>
-                <input required value={newResource.title} onChange={e => setNewResource({...newResource, title: e.target.value})} className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all" placeholder={t("admin_resource_title_ph", "Enter resource title (e.g. ML Cheat Sheet)")} type="text" />
-              </div>
-              <div className="flex flex-col gap-2 md:col-span-2">
-                <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">{t("admin_resource_desc", "Description")}</label>
-                <textarea required value={newResource.description} onChange={e => setNewResource({...newResource, description: e.target.value})} className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all resize-none" placeholder={t("admin_resource_desc_ph", "Enter resource description...")} rows="3"></textarea>
-              </div>
-              <div className="flex flex-col gap-2">
-                <div className="flex flex-col gap-2">
-                  <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">{t("admin_resource_type", "Type de Ressource")}</label>
-                  <select 
-                    value={newResource.category} 
-                    onChange={e => setNewResource({...newResource, category: e.target.value})}
-                    className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all appearance-none"
-                  >
-                    <option value="pdf">PDF</option>
-                    <option value="support_cours">Support de cours</option>
-                    <option value="tutoriel">Tutoriel</option>
-                    <option value="presentation">Présentation</option>
-                    <option value="lien_utile">Lien utile</option>
-                  </select>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant">{t("admin_resource_file", "Upload File")}</label>
-                  <input 
-                    type="file" 
-                    onChange={e => setNewResource({...newResource, file: e.target.files[0]})}
-                    className="w-full bg-surface-container-low border border-dashed border-outline-variant/30 rounded-xl px-4 py-2 font-body text-sm focus:ring-2 focus:ring-[#9D4EDD] outline-none transition-all cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[#9D4EDD]/10 file:text-[#9D4EDD] hover:file:bg-[#9D4EDD]/20"
-                  />
-                </div></div>
-              <div className="md:col-span-2 flex justify-end mt-2">
-                <button className="px-8 py-3 bg-[#9D4EDD] text-white font-body font-semibold text-xs uppercase tracking-wider rounded-xl hover:opacity-80 transition-opacity flex items-center gap-2 shadow-sm" type="submit">
-                  <span className="material-symbols-outlined text-sm">library_add</span>{t("admin_resource_add", "Add to Resources")}
-                </button>
-              </div>
-            </form>
+            <AddResourceForm onResourceAdded={(resource) => { /* Update resources state if you had it, maybe you fetch again or just refresh page */ window.location.reload(); }} />
           </div>
         </div>
       </div>
@@ -733,9 +629,41 @@ const Admin = () => {
       )}
 
       {/* Background SVG elements */}
+      
+      {/* Delete Confirmation Modal */}
+      {memberToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl border border-outline-variant/30 transform transition-all">
+            <div className="flex flex-col items-center text-center gap-4">
+              <div className="w-16 h-16 bg-error/10 rounded-full flex items-center justify-center text-error mb-2">
+                <span className="material-symbols-outlined text-3xl">warning</span>
+              </div>
+              <h3 className="font-display font-bold text-xl text-black">Delete Member?</h3>
+              <p className="font-body text-sm text-on-surface-variant">
+                This action cannot be undone. Are you sure you want to remove this member from the club?
+              </p>
+              <div className="flex gap-3 w-full mt-4">
+                <button 
+                  onClick={() => setMemberToDelete(null)}
+                  className="flex-1 py-3 px-4 font-body font-semibold text-xs uppercase tracking-wider rounded-xl border border-outline-variant/30 hover:bg-surface-container transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleDeleteMember}
+                  className="flex-1 py-3 px-4 font-body font-semibold text-xs uppercase tracking-wider rounded-xl bg-error text-white shadow-sm hover:bg-error/80 transition-colors"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       </main>
   );
 };
 
 export default Admin;
+
 

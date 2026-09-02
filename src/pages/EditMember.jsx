@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 import { useTranslation } from 'react-i18next';
 import api from '../lib/api';
 
-const AddMember = () => {
+const EditMember = () => {
+  const { id } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
+  const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm({
     defaultValues: { skills: [] }
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this member?")) return;
     try {
-      await api.delete(/team//);
+      await api.delete(`/team/${id}/`);
       navigate('/admin');
     } catch (err) {
       console.error(err);
@@ -28,7 +29,7 @@ const AddMember = () => {
     const fetchMember = async () => {
       try {
         const { data } = await api.get('/team/');
-        const member = data.find(m => m.id.toString() === id.toString());
+        const member = data.find(m => m.uuid === id || m.id.toString() === id.toString());
         if (member) {
           reset({
             firstName: member.prenom,
@@ -93,7 +94,7 @@ const AddMember = () => {
         ordre_affichage: parseInt(data.ordre_affichage) || 0
       };
 
-      await api.put(/team//, payload);
+      await api.put(`/team/${id}/`, payload);
       navigate('/admin');
     } catch (err) {
       console.error(err);
@@ -275,4 +276,4 @@ const AddMember = () => {
   );
 };
 
-export default AddMember;
+export default EditMember;

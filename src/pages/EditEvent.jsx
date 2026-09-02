@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import api from '../lib/api';
 
 const EditEvent = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { register, handleSubmit, reset, formState: { errors } } = useForm();
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState('');
+  
+  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm();
+  const titleVal = watch('title', '');
+  const snippetVal = watch('snippet', '');
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
         const res = await api.get(`/events/${id}/`);
         const event = res.data;
-        // Map backend French fields back to frontend English fields for the form
         reset({
           title: event.titre,
           snippet: event.description, 
@@ -39,14 +41,14 @@ const EditEvent = () => {
     setIsSubmitting(true);
     setServerError('');
     try {
-      // Create event payload mapping frontend English fields back to backend French keys
       const payload = {
         titre: data.title,
         description: data.snippet,
         details: data.details,
         lieu: data.location,
         photo_url: data.image || '',
-        deadline: data.deadline || null
+        deadline: data.deadline || null,
+        date: data.deadline || new Date().toISOString().split('T')[0]
       };
 
       await api.put(`/events/${id}/`, payload);
@@ -94,19 +96,33 @@ const EditEvent = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5" noValidate>
           <div className="flex flex-col gap-1.5">
-            <label className="font-body font-semibold text-xs uppercase tracking-wider text-black">Event Name *</label>
+            <div className="flex justify-between items-center">
+              <label className="font-body font-semibold text-xs uppercase tracking-wider text-black">Event Name *</label>
+              <span className="text-xs text-on-surface-variant/60">{titleVal?.length || 0}/25</span>
+            </div>
             <input 
-              {...register('title', { required: 'Event name is required' })}
+              {...register('title', { 
+                required: 'Event name is required',
+                maxLength: { value: 25, message: 'Max 25 characters allowed' }
+              })}
+              maxLength={25}
               className={`w-full bg-surface-variant border ${errors.title ? 'border-red-500' : 'border-outline-variant/30'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors`} 
             />
             {errors.title && <span className="text-red-500 text-xs mt-1">{errors.title.message}</span>}
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="font-body font-semibold text-xs uppercase tracking-wider text-black">Short Snippet *</label>
+            <div className="flex justify-between items-center">
+              <label className="font-body font-semibold text-xs uppercase tracking-wider text-black">Short Snippet *</label>
+              <span className="text-xs text-on-surface-variant/60">{snippetVal?.length || 0}/90</span>
+            </div>
             <textarea 
               rows={2}
-              {...register('snippet', { required: 'Snippet is required' })}
+              {...register('snippet', { 
+                required: 'Snippet is required',
+                maxLength: { value: 90, message: 'Max 90 characters allowed' }
+              })}
+              maxLength={90}
               className={`w-full bg-surface-variant border ${errors.snippet ? 'border-red-500' : 'border-outline-variant/30'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors resize-none`} 
             ></textarea>
             {errors.snippet && <span className="text-red-500 text-xs mt-1">{errors.snippet.message}</span>}

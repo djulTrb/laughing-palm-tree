@@ -321,7 +321,7 @@ const Home = () => {
                   <div 
                     ref={scrollRef}
                     onScroll={handleProjectScroll}
-                    className="flex overflow-x-auto snap-x snap-mandatory gap-4 md:gap-8 w-full px-4 md:px-8 pb-8 scrollbar-hide [&::-webkit-scrollbar]:hidden"
+                    className={`flex overflow-x-auto snap-x snap-mandatory gap-4 md:gap-8 w-full px-4 md:px-8 pb-8 scrollbar-hide [&::-webkit-scrollbar]:hidden ${projects.length === 1 ? 'md:justify-center' : (projects.length === 2 ? 'xl:justify-center' : '')}`}
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                   >
                     {projects.map(proj => (
@@ -334,7 +334,7 @@ const Home = () => {
                               {t('proj_explore')} <span className="material-symbols-outlined text-sm">arrow_forward</span>
                             </a>
                           ) : (
-                            <span className="mt-auto flex items-center gap-1 text-on-surface-variant/60 font-body font-semibold text-xs uppercase tracking-wider w-fit">
+                            <span className="mt-auto flex items-center gap-1 text-[#9D4EDD] font-body font-semibold text-xs uppercase tracking-wider w-fit">
                               {t('proj_in_process', 'In process')} <span className="material-symbols-outlined text-sm">pending</span>
                             </span>
                           )}
@@ -423,7 +423,7 @@ const Home = () => {
           </h2>
           
           <div className="md:col-span-1 flex justify-center md:justify-start rtl:md:justify-end w-full">
-            <Link ref={ctaButtonRef} to="/recruitment" aria-label="Join MIRAI Club" className="group relative flex items-center justify-center w-48 h-48 md:w-64 md:h-64 rounded-[100%] overflow-hidden shrink-0 bg-[#240046] dark:bg-[#c87fff] shadow-xl">
+            <Link ref={ctaButtonRef} to="/registration" aria-label="Join MIRAI Club" className="group relative flex items-center justify-center w-48 h-48 md:w-64 md:h-64 rounded-[100%] overflow-hidden shrink-0 bg-[#240046] dark:bg-[#c87fff] shadow-xl">
              {/* The Spinning Circular Text */}
              <svg className="absolute inset-0 w-full h-full p-4 animate-[spin_10s_linear_infinite]" viewBox="0 0 100 100">
                <path id="circlePath" d="M 50, 50 m -38, 0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" fill="none" />

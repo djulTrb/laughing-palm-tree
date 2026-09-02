@@ -26,8 +26,10 @@ class RecruitmentSettingsSerializer(serializers.ModelSerializer):
 class CandidaturePublicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Candidature
-        fields = ["id", "prenom", "nom", "email", "telephone",
-                  "niveau_etude", "departement", "motivation", "date_candidature"]
+        fields = ["id", "type_candidature", "prenom", "nom", "email", "telephone",
+                  "niveau_etude", "departement", "motivation", 
+                  "github_url", "linkedin_url", "portfolio_url", "competences", "experience",
+                  "date_candidature"]
         read_only_fields = ["id", "date_candidature"]
 
     def validate_email(self, value):
@@ -39,6 +41,6 @@ class CandidaturePublicSerializer(serializers.ModelSerializer):
 class CandidatureAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Candidature
-        fields = ["id", "prenom", "nom", "email", "telephone", "niveau_etude",
-                  "departement", "motivation", "statut", "date_candidature", "updated_at"]
+        fields = ["id", "type_candidature", "prenom", "nom", "email", "telephone", "niveau_etude",
+                  "departement", "motivation", "github_url", "linkedin_url", "portfolio_url", "competences", "experience", "statut", "date_candidature", "updated_at"]
         read_only_fields = ["id", "date_candidature", "updated_at"]

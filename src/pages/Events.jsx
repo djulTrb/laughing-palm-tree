@@ -36,10 +36,10 @@ const Events = () => {
       <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 md:px-12 lg:px-24 pt-24 md:pt-32 pb-16 flex flex-col items-center relative z-10 gap-4">
         <div className="w-full flex flex-col items-center mb-12 sm:mb-16 px-2 text-center relative" ref={containerRef}>
           <PageTitleBlob />
-          <span className="font-accent font-semibold text-xs text-[#9D4EDD] uppercase tracking-wider mb-3 sm:mb-4">Our Events</span>
-          <h1 className="text-black mb-4 sm:mb-6 font-display font-bold text-4xl sm:text-5xl lg:text-7xl tracking-tight">Upcoming Events</h1>
+          <span className="font-accent font-semibold text-xs text-[#9D4EDD] uppercase tracking-wider mb-3 sm:mb-4">{t('events_eyebrow') || 'Our Events'}</span>
+          <h1 className="text-black mb-4 sm:mb-6 font-display font-bold text-4xl sm:text-5xl lg:text-7xl tracking-tight">{t('events_title') || 'Upcoming Events'}</h1>
           <p className="font-body text-base sm:text-lg text-on-surface-variant max-w-2xl leading-relaxed">
-            Join us for exciting workshops, seminars, and networking sessions.
+            {t('events_desc') || 'Join us for exciting workshops, seminars, and networking sessions.'}
           </p>
         </div>
         

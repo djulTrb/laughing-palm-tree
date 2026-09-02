@@ -23,6 +23,10 @@ class RecruitmentSettingsView(APIView):
         settings = RecruitmentSettings.get()
         return Response(RecruitmentSettingsSerializer(settings).data)
 
+
+    def patch(self, request):
+        return self.put(request)
+
     def put(self, request):
         settings = RecruitmentSettings.get()
         serializer = RecruitmentSettingsSerializer(settings, data=request.data, partial=True)
@@ -70,7 +74,29 @@ class CandidatureViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["patch"], url_path="statut")
     def update_statut(self, request, pk=None):
         candidature = self.get_object()
-        serializer = CandidatureAdminSerializer(candidature, data={"statut": request.data.get("statut")}, partial=True)
+        new_statut = request.data.get("statut")
+        
+        # update status
+        serializer = CandidatureAdminSerializer(candidature, data={"statut": new_statut}, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+
+        # If accepted and is actif, add to Member table
+        if new_statut == 'accepte' and candidature.type_candidature == 'actif':
+            from apps.team.models import Member
+            import uuid
+            # Ensure not already added (basic check on email/github if available, or just add)
+            # We'll just create a new Member
+            Member.objects.get_or_create(
+                nom=candidature.nom,
+                prenom=candidature.prenom,
+                defaults={
+                    'poste': 'Active Member',
+                    'skills': candidature.competences or '',
+                    'linkedin': candidature.linkedin_url or '',
+                    'github': candidature.github_url or '',
+                    'uuid': str(uuid.uuid4())
+                }
+            )
+
         return Response(serializer.data)

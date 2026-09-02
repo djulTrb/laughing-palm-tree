@@ -5,7 +5,10 @@ import { initReactI18next } from 'react-i18next';
 const resources = {
   en: {
     translation: {
-      "home": "home", "events": "events", "gallery": "gallery", "resources": "resources", "contact": "contact", "recruitment": "recruitment",
+      "home": "home", "events": "events",
+      "events_eyebrow": "Our Events",
+      "events_title": "Upcoming Events",
+      "events_desc": "Join us for exciting workshops, seminars, and networking sessions.", "gallery": "gallery", "resources": "resources", "contact": "contact", "recruitment": "Registration",
       
       // Home
       "home_subtitle": "AI CLUB • MOULOUD MAMMERI UNIVERSITY • TIZI OUZOU",
@@ -44,10 +47,26 @@ const resources = {
       "address": "Address", "email": "Email", "follow_ig": "Follow on Instagram", "follow_fb": "Follow on Facebook", "follow_in": "Follow on LinkedIn",
       "address_val": "Département d'Informatique, Faculté de Génie Électrique et d'Informatique, Université Mouloud Mammeri, Tizi Ouzou, Algérie",
       "contact_msg_title": "Send us a direct message",
-      "form_name": "Full Name *", "form_email": "Email *", "form_uni_email": "University Email *", "form_msg": "Message *", "form_send": "Send Message",
+      "form_name": "Name *",
+      "form_type": "Application Type *",
+      "form_type_adherent": "Adherent",
+      "form_type_actif": "Active Member",
+        "form_note_adherent": "Less commitment than an active member. You can attend our events and participate in our public activities.",
+        "form_note_actif": "Requires more commitment. You will be meeting and discussing with the members, planning projects, sharing your thoughts, and gaining full access to internal club operations.",
+      "form_telephone": "Phone Number *",
+      "form_github": "GitHub URL *",
+      "form_linkedin": "LinkedIn URL",
+      "form_portfolio": "Portfolio URL",
+      "form_competences": "Technical Skills *",
+      "form_experience": "Experience Level *",
+      "form_experience_beginner": "Beginner",
+      "form_experience_intermediate": "Intermediate",
+      "form_experience_advanced": "Advanced",
+      "form_email": "Personal Email *", "form_uni_email": "University Email *", "form_msg": "Message *", "form_send": "Send Message",
       "footer_slogan": "Heritage • Intelligence • Future", "footer_email_ph": "Enter your email", "footer_copy": "© 2026 MIRAI Club - All Rights Reserved. Mouloud Mammeri University · Tizi Ouzou · Algeria.",
       
       "home_cta_title": "See <nowrap>AI <pill1/></nowrap> <brDesktop/> From a different <brDesktop/> <nowrap>lens <pill2/></nowrap>", "home_cta_desc": "",
+      "proj_in_process": "In process",
       "home_join_circle": "Join Mirai Club *",
 
       // Recruitment Form
@@ -69,7 +88,10 @@ const resources = {
   },
   fr: {
     translation: {
-      "home": "accueil", "events": "événements", "gallery": "galerie", "resources": "ressources", "contact": "contact", "recruitment": "recrutement",
+      "home": "accueil", "events": "événements",
+      "events_eyebrow": "Nos Événements",
+      "events_title": "Événements à Venir",
+      "events_desc": "Rejoignez-nous pour des ateliers passionnants, des séminaires et des sessions de réseautage.", "gallery": "galerie", "resources": "ressources", "contact": "contact", "recruitment": "Inscription",
       
       "home_subtitle": "CLUB IA • UNIVERSITÉ MOULOUD MAMMERI • TIZI OUZOU",
       "home_build": "Construisez le Futur avec",
@@ -103,10 +125,26 @@ const resources = {
       "address": "Adresse", "email": "Email", "follow_ig": "Suivre sur Instagram", "follow_fb": "Suivre sur Facebook", "follow_in": "Suivre sur LinkedIn",
       "address_val": "Département d'Informatique, Faculté de Génie Électrique et d'Informatique, Université Mouloud Mammeri, Tizi Ouzou, Algérie",
       "contact_msg_title": "Envoyez-nous un message direct",
-      "form_name": "Nom Complet *", "form_email": "Email *", "form_uni_email": "Email Universitaire *", "form_msg": "Message *", "form_send": "Envoyer le Message",
+      "form_name": "Nom complet *",
+      "form_type": "Type de Candidature *",
+      "form_type_adherent": "Adhérent",
+      "form_type_actif": "Membre Actif",
+        "form_note_adherent": "Moins d'engagement qu'un membre actif. Vous pouvez assister à nos événements et participer à nos activités publiques.",
+        "form_note_actif": "Nécessite plus d'engagement. Vous rencontrerez et discuterez avec les membres, planifierez des projets, partagerez vos idées et aurez un accès complet aux opérations internes du club.",
+      "form_telephone": "Numéro de Téléphone *",
+      "form_github": "Lien GitHub *",
+      "form_linkedin": "Lien LinkedIn",
+      "form_portfolio": "Lien Portfolio",
+      "form_competences": "Compétences Techniques *",
+      "form_experience": "Niveau d'Expérience *",
+      "form_experience_beginner": "Débutant",
+      "form_experience_intermediate": "Intermédiaire",
+      "form_experience_advanced": "Avancé",
+      "form_email": "Email *", "form_uni_email": "Email Universitaire *", "form_msg": "Message *", "form_send": "Envoyer le Message",
       "footer_slogan": "Héritage • Intelligence • Futur", "footer_email_ph": "Entrez votre email", "footer_copy": "© 2026 Club MIRAI - Tous droits réservés. Université Mouloud Mammeri · Tizi Ouzou · Algérie.",
       
       "home_cta_title": "Voir <nowrap>l'IA <pill1/></nowrap> <brDesktop/> Sous un autre <brDesktop/> <nowrap>angle <pill2/></nowrap>", "home_cta_desc": "",
+      "proj_in_process": "En cours",
       "home_join_circle": "Rejoindre MIRAI *"     ,
 
       "form_major": "Spécialité / Domaine d'étude *", "form_year": "Année Universitaire *", "form_why": "Pourquoi voulez-vous rejoindre le CLUB MIRAI ? *", "form_warning_title": "Prenez ceci au sérieux !", "form_warning_desc": "Une fois votre candidature soumise, vous n'aurez pas d'autre chance de postuler à nouveau. Veuillez vous assurer que toutes les informations sont exactes et que votre motivation est claire avant de continuer.", "form_submit": "Soumettre la Candidature",
@@ -124,7 +162,7 @@ const resources = {
   },
   ar: {
     translation: {
-      "home": "الرئيسية", "events": "الأحداث", "gallery": "المعرض", "resources": "الموارد", "contact": "اتصل بنا", "recruitment": "توظيف",
+      "home": "الرئيسية", "events": "الأحداث", "gallery": "المعرض", "resources": "الموارد", "contact": "اتصل بنا", "recruitment": "تسجيل",
       
       "home_subtitle": "نادي الذكاء الاصطناعي • جامعة مولود معمري • تيزي وزو",
       "home_build": "ابني المستقبل مع",
@@ -158,10 +196,26 @@ const resources = {
       "address": "العنوان", "email": "البريد الإلكتروني", "follow_ig": "تابعنا على إنستغرام", "follow_fb": "تابعنا على فيسبوك", "follow_in": "تابعنا على لينكد إن",
       "address_val": "قسم الإعلام الآلي، كلية الهندسة الكهربائية والإعلام الآلي، جامعة مولود معمري، تيزي وزو، الجزائر",
       "contact_msg_title": "أرسل لنا رسالة مباشرة",
-      "form_name": "الاسم الكامل *", "form_email": "البريد الإلكتروني *", "form_uni_email": "البريد الجامعي *", "form_msg": "الرسالة *", "form_send": "إرسال الرسالة",
+      "form_name": "الاسم الكامل *",
+        "form_type": "نوع التسجيل *",
+        "form_type_adherent": "منخرط",
+        "form_type_actif": "عضو نشط",
+        "form_note_adherent": "التزام أقل من العضو النشط. يمكنك حضور فعالياتنا والمشاركة في أنشطتنا العامة.",
+        "form_note_actif": "يتطلب التزاما أكبر. ستلتقي وتناقش مع الأعضاء، وتخطط للمشاريع، وتشارك أفكارك، وستحصل على وصول كامل للعمليات الداخلية للنادي.",
+        "form_telephone": "رقم الهاتف *",
+        "form_github": "GitHub URL *",
+        "form_linkedin": "LinkedIn URL",
+        "form_portfolio": "رابط معرض الأعمال",
+        "form_competences": "المهارات التقنية *",
+        "form_experience": "مستوى الخبرة *",
+        "form_experience_beginner": "مبتدئ",
+        "form_experience_intermediate": "متوسط",
+        "form_experience_advanced": "متقدم",
+ "form_email": "البريد الإلكتروني *", "form_uni_email": "البريد الجامعي *", "form_msg": "الرسالة *", "form_send": "إرسال الرسالة",
       "footer_slogan": "تراث • ذكاء • مستقبل", "footer_email_ph": "أدخل بريدك الإلكتروني", "footer_copy": "© 2026 نادي MIRAI - جميع الحقوق محفوظة. جامعة مولود معمري · تيزي وزو · الجزائر.",
       
       "home_cta_title": "رؤية جديدة <pill2/> <brDesktop/> للذكاء <nowrap>الاصطناعي <pill1/></nowrap>", "home_cta_desc": "",
+      "proj_in_process": "??? ???????",
       "home_join_circle": "Join Mirai Club *",
 
       "form_major": "التخصص / مجال الدراسة *", "form_year": "السنة الدراسية *", "form_why": "لماذا تريد الانضمام إلى نادي MIRAI؟ *", "form_warning_title": "خذ هذا الأمر بجدية!", "form_warning_desc": "بمجرد تقديم طلبك، لن يكون لديك فرصة أخرى للتقديم مرة أخرى. يرجى التأكد من دقة جميع المعلومات ووضوح دافعك قبل المتابعة.", "form_submit": "تقديم الطلب",

@@ -5,14 +5,7 @@ import { useTranslation } from 'react-i18next';
 import PageTitleBlob from '../components/ui/PageTitleBlob';
 import { usePageEntrance } from '../hooks/usePageEntrance';
 
-const DUMMY_IMAGES = [
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuCLlecgydWoEYN3h3-kduNhiESu3DpgwkvOKDaPnEpwLo555wsd1PqgW8egzU0lcTBmPM6JZq-NpYPcrLWDrfaR67_v4BLcsoWSCDLSgYcAJtpa3sa5CujNk4Il-9nxKSJ9HayWSn0HBkdagWRfynzjFKr5OkBNgD_kp5XNAGRrk0r2VpVT9nQcYNHlWzUWn1jhfJ-GfALzzfOlKTh-t2bXckB6Wlght5hh68NlxMU_9t13QeyPv8VYyChjqq3E-72EiLg",
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuDIU7DXVGhLTvu5SQ9jeBh_5LBUN6oz6p1eYLjOlMHqbg0Yw7t4WKqVNE4hTBPqryOG694CrKZGB5iyOA4-vHMedFwZgITTKcVZv2N-7OuvXZQppHV5AsgWTZXWCYOcnGQ8Fjqzb-Py6PViLSb-gg_1DiKnLJU8NI7TfQEYij5Tu4-hSFSyjgeBKcdV_Ohjs-Gm-0WacZjnRyGO5rs5hYi8Jq9QVnK8BoFcVd7yu3kAOCMP-occR1wW4ElRVWL0kkyj4Cc",
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuBc3NfbPsOTPBIeO9tc09MXmHjTSEPl5bD3zly9MRvLIfkcCfc-rVGcxW0xk4N8SdpzwJX82JCV4Np5Mt-ijbVDk8xC6T-CivUK19elmM3tTHd9QEvMsR949NNgZljq53ZrlcDvvLtpS16r4GwTFmAaB7pC-e18_-ykLCLbq0YWS9bBDB_kag6uuCTR0p0uo3TSadA-G4a2k2iIJrioWOFlC5LEG5dz5zyDGs-kbQTgFnI_t88Pyaljk6JUpZ16BPrzSIY",
-  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=2070&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2012&auto=format&fit=crop",
-];
+
 
 import api from '../lib/api';
 

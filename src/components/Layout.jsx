@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 import BackToTop from './BackToTop';
@@ -7,6 +7,8 @@ import BackToTop from './BackToTop';
 import Chatbot from './Chatbot';
 
 const Layout = () => {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/admin');
   return (
     <div className="antialiased min-h-screen flex flex-col overflow-x-hidden bg-background relative">
       {/* Global Noise Overlay */}
@@ -18,7 +20,7 @@ const Layout = () => {
       <div className="flex-grow">
         <Outlet />
       </div>
-      <Footer />
+      {!isAdmin && <Footer />}
       <BackToTop />
       <Chatbot />
     </div>

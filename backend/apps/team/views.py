@@ -13,3 +13,4 @@ class MemberViewSet(viewsets.ModelViewSet):
     search_fields    = ["prenom", "nom", "poste"]
     ordering_fields  = ["ordre_affichage", "nom"]
     ordering         = ["ordre_affichage"]
+    lookup_field     = "uuid"

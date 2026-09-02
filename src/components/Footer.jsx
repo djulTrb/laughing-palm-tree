@@ -154,7 +154,7 @@ const Footer = () => {
             <Link className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant hover:text-[#9D4EDD] transition-colors" to="/gallery">{t('gallery')}</Link>
             <Link className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant hover:text-[#9D4EDD] transition-colors" to="/resources">{t('resources')}</Link>
             <Link className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant hover:text-[#9D4EDD] transition-colors" to="/contact">{t('contact')}</Link>
-            <Link className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant hover:text-[#9D4EDD] transition-colors" to="/recruitment">{t('recruitment')}</Link>
+            <Link className="font-body font-semibold text-xs uppercase tracking-wider text-on-surface-variant hover:text-[#9D4EDD] transition-colors" to="/registration">{t('recruitment')}</Link>
           </nav>
           
           {/* Subscription Form */}

@@ -47,7 +47,7 @@ const Header = () => {
     { name: t('gallery'), path: '/gallery' },
     { name: t('resources'), path: '/resources' },
     { name: t('contact'), path: '/contact' },
-    { name: t('recruitment'), path: '/recruitment' },
+    { name: t('recruitment'), path: '/registration' },
   ].filter(link => link.path !== location.pathname);
 
   const flags = {
