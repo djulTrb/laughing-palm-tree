@@ -2,6 +2,7 @@ from django.db import models
 
 
 class RecruitmentSettings(models.Model):
+    uuid = models.CharField(max_length=100, blank=True, null=True, unique=True)
     recrutements_ouverts        = models.BooleanField(default=False)
     date_ouverture_candidatures = models.DateField(null=True, blank=True)
     date_limite_candidatures    = models.DateField(null=True, blank=True)

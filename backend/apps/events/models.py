@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Event(models.Model):
+    uuid = models.CharField(max_length=100, blank=True, null=True, unique=True)
     titre = models.CharField(max_length=200)
     snippet = models.CharField(max_length=255, blank=True)
     description = models.TextField()

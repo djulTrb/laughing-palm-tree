@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
+import { v4 as uuidv4 } from 'uuid';
 import LoadingState from '../components/ui/LoadingState';
 
 const DUMMY_EVENTS = [
@@ -185,7 +186,7 @@ const Admin = () => {
     e.preventDefault();
     if (!newProject.title) return;
     try {
-      const res = await api.post('/website/projects/', newProject);
+      const res = await api.post('/website/projects/', { ...newProject, uuid: uuidv4() });
       setProjects([...projects, res.data]);
       setNewProject({ title: '', category: '', description: '', link: '' });
     } catch (err) {
@@ -207,7 +208,7 @@ const Admin = () => {
     e.preventDefault();
     if (!newGalleryTitle) return;
     try {
-      const res = await api.post('/gallery/albums/', { title: newGalleryTitle });
+      const res = await api.post('/gallery/albums/', { title: newGalleryTitle, uuid: uuidv4() });
       setGalleries([...galleries, { ...res.data, images: [] }]);
       setNewGalleryTitle('');
     } catch (err) {

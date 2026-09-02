@@ -2,6 +2,7 @@ from django.db import models
 
 
 class WebsiteSettings(models.Model):
+    uuid = models.CharField(max_length=100, blank=True, null=True, unique=True)
     logo_url        = models.URLField(max_length=500, blank=True)
     slogan          = models.CharField(max_length=255, blank=True)
     description     = models.TextField(blank=True)

@@ -19,6 +19,7 @@ const Contact = React.lazy(routeComponents.Contact);
 const Recruitment = React.lazy(routeComponents.Recruitment);
 const Admin = React.lazy(routeComponents.Admin);
 const AddMember = React.lazy(routeComponents.AddMember);
+const EditEvent = React.lazy(routeComponents.EditEvent);
 const AdminAuth = React.lazy(routeComponents.AdminAuth);
 const EventDetails = React.lazy(routeComponents.EventDetails);
 const NotFound = React.lazy(routeComponents.NotFound);
@@ -77,6 +78,7 @@ function App() {
                     <Route path="recruitment" element={<Recruitment />} />
                     <Route path="admin" element={<ProtectedAdminRoute><Admin /></ProtectedAdminRoute>} />
                     <Route path="admin/add-member" element={<ProtectedAdminRoute><AddMember /></ProtectedAdminRoute>} />
+                    <Route path="admin/edit-event/:id" element={<ProtectedAdminRoute><EditEvent /></ProtectedAdminRoute>} />
                     <Route path="admin-auth" element={<AdminAuth />} />
                   </Route>
                   {/* 404 Catch-all Outside Layout */}

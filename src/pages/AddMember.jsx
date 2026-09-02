@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
-import api from '../services/api';
+import api from '../lib/api';
 
 const AddMember = () => {
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ const AddMember = () => {
               <label className="font-body font-semibold text-xs uppercase tracking-wider text-black">First Name *</label>
               <input 
                 {...register('prenom', { required: 'First name is required' })}
-                className={w-full bg-surface-variant border  rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors} 
+                className={`w-full bg-surface-variant border ${errors.prenom ? 'border-red-500' : 'border-outline-variant/30'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors`} 
                 placeholder="e.g. John" 
               />
               {errors.prenom && <span className="text-red-500 text-xs mt-1">{errors.prenom.message}</span>}
@@ -71,7 +71,7 @@ const AddMember = () => {
               <label className="font-body font-semibold text-xs uppercase tracking-wider text-black">Last Name *</label>
               <input 
                 {...register('nom', { required: 'Last name is required' })}
-                className={w-full bg-surface-variant border  rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors} 
+                className={`w-full bg-surface-variant border ${errors.nom ? 'border-red-500' : 'border-outline-variant/30'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors`} 
                 placeholder="e.g. Doe" 
               />
               {errors.nom && <span className="text-red-500 text-xs mt-1">{errors.nom.message}</span>}
@@ -82,7 +82,7 @@ const AddMember = () => {
             <label className="font-body font-semibold text-xs uppercase tracking-wider text-black">Role / Position *</label>
             <input 
               {...register('poste', { required: 'Role is required' })}
-              className={w-full bg-surface-variant border  rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors} 
+              className={`w-full bg-surface-variant border ${errors.poste ? 'border-red-500' : 'border-outline-variant/30'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#9D4EDD] transition-colors`} 
               placeholder="e.g. Developer" 
             />
             {errors.poste && <span className="text-red-500 text-xs mt-1">{errors.poste.message}</span>}

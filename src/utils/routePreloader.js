@@ -7,6 +7,8 @@ export const routeComponents = {
   Recruitment: () => import('../pages/Recruitment'),
   Admin: () => import('../pages/Admin'),
   AdminAuth: () => import('../pages/AdminAuth'),
+  AddMember: () => import('../pages/AddMember'),
+  EditEvent: () => import('../pages/EditEvent'),
   EventDetails: () => import('../pages/EventDetails'),
   NotFound: () => import('../pages/NotFound'),
 };

@@ -10,6 +10,7 @@ class Resource(models.Model):
         ("lien_utile",    "Lien utile"),
     ]
 
+    uuid = models.CharField(max_length=100, blank=True, null=True, unique=True)
     titre       = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     categorie   = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default="pdf")
